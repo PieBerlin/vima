@@ -15,13 +15,13 @@ typedef enum {
     INST_PUSH,/* Push value to stack */
     INST_POP,/*Pop value from stack */
     INST_BSWAP,/*Byte swap*/
-    INST_XCHG/*Exchange*/
+    INST_XCHG,/*Exchange*/
     INST_INC,/* Increeament */
     INST_DEC,/* Decreament*/
     INST_NEG,/*Negate*/
     INST_CMP,/*Compare*/
     INST_ADD,/*Add*/
-    INS_ADDC, /*ADD with carry*/
+    INST_ADDC, /*ADD with carry*/
     INST_SUB,/*Subtract*/
     INS_SUBC,/*Subtract with carry*/
     INST_MUL,/*Multiply*/
@@ -51,7 +51,7 @@ typedef enum {
     INST_J,/*Other jump*/
     INST_LOOP,/**/
     INST_LOOPE, /*Loop with ECX*/
-    INST_LOOPNE/**/
+    INST_LOOPNE,/**/
     INST_CALL, /*Call subroutine*/
     INST_RET,/**/
     INST_CPUID,/* CPU information */
@@ -64,6 +64,13 @@ typedef struct Inst{
     int value;
 
 }Inst;
+
+
+typedef struct CPU{
+    // Cache L1,L2,L3;
+    // Registers Reg;
+
+}CPU;
 
 typedef struct {
     int stack[MAX_STACK_SIZE];
@@ -81,6 +88,8 @@ typedef struct {
 #define DEF_INST_MUL {.type = INST_MUL }
 #define DEF_INST_DIV {.type = INST_DIV }
 #define DEF_INST_PRINT {.type = INST_PRINT } 
+
+Machine *init_machine();
 
 
 #endif // VIMA_H

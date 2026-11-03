@@ -48,7 +48,7 @@ void write_program_to_file(char *file_path){
 
 }
 
-Machine *read_program_from_file(char *file_path){
+void read_program_from_file(Machine *machine,char *file_path){
     FILE  *file = fopen(file_path,"rb");
     if (file == NULL){
         fprintf(stderr, "ERROR: Could not read from file %s\n",file_path);
@@ -56,7 +56,6 @@ Machine *read_program_from_file(char *file_path){
     }
 
     Inst *instruction = malloc(sizeof(Inst) * MAX_STACK_SIZE);
-    Machine *machine = malloc(sizeof(Machine));
 
     fseek(file,0,SEEK_END);
     int length = ftell(file);
@@ -69,15 +68,13 @@ Machine *read_program_from_file(char *file_path){
 
     fclose(file);
 
-    return machine;
-
 }
 int main(){
 
-    Machine *machine;
+    Machine *machine = init_machine();
     int a,b;
-    // write_program_to_file("test.vm");
-    machine = read_program_from_file("test.vm");
+    write_program_to_file("test.vm");
+    read_program_from_file(machine,"test.vm");
     for (size_t ip = 0; ip< PROGRAM_SIZE; ip++){
         switch (machine->instructions[ip].type) {
             case INST_PUSH:
@@ -108,6 +105,8 @@ int main(){
                 break;
             case INST_PRINT:
                 printf("%d\n",pop(machine));
+                break;
+            default:
                 break;
         }
     }
