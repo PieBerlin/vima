@@ -97,6 +97,11 @@ void print_tokens(Token *tokens){
                         tokens[index].line,tokens[index].character);
                 index++;
                 break;
+            case TYPE_SEPARATOR:
+                printf("TOKEN TYPE SEPARATOR : VALUE %s LINE %d, CHARACTER : %d\n",
+                        tokens[index].value,tokens[index].line,tokens[index].character);
+                index++;
+                break;
             default:
                 index++;
                 break;
@@ -105,6 +110,16 @@ void print_tokens(Token *tokens){
     }
     return;
         
+}
+
+Token *generate_separator(char value){
+    Token *token = malloc(sizeof(Token));
+    token->type = TYPE_SEPARATOR;
+    token->value = malloc(sizeof(char) * 2);
+    token->value[0] = value;
+    token->value[1] = '\0';
+
+    return token;
 }
 
 Token *lexer(char *filename){
@@ -141,16 +156,30 @@ Token *lexer(char *filename){
             tokens[tokens_index] = *token;
             character++;
             tokens_index++;
+            free(token);
         }else if(isdigit(buffer[*current_index])){
             token = generate_number(buffer,current_index);
             token->character = character;
             token->line = line;
-            tokens[tokens_index] = * token;
+            tokens[tokens_index] = *token;
             character++;
             tokens_index++;
+            free(token);
+        }else if(buffer[*current_index] == ',') {
+            printf("We get here\n");
+            token = generate_separator(buffer[*current_index]);
+            token->character = character;
+            token->line = line;
+            tokens[tokens_index] = *token;
+            character++;
+            tokens_index++;
+            *current_index += 1;
+            free(token);
+
+        } else {
+            *current_index += 1;
+
         }
-        character ++;
-        *current_index += 1;
 
     }
     Token *end_of_tokens = malloc(sizeof(Token));

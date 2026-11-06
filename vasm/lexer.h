@@ -57,6 +57,7 @@ typedef enum {
     TYPE_PRINT,/**/
     TYPE_HALT,/**/
     TYPE_INT,
+    TYPE_SEPARATOR,
     END_OF_TOKENS,
 
 }TokenType;
