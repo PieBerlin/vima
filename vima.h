@@ -9,7 +9,7 @@
 #define MAX_STACK_SIZE 1024
 
 typedef enum {
-    INST_NOP,/*No operation */
+    INST_NOP ,/*No operation */
     INST_MOV,/*Move value to , from ,between registers/memory */
     INST_CMOV,/* Conditional mov */
     INST_PUSH,/* Push value to stack */
@@ -23,7 +23,7 @@ typedef enum {
     INST_ADD,/*Add*/
     INST_ADDC, /*ADD with carry*/
     INST_SUB,/*Subtract*/
-    INS_SUBC,/*Subtract with carry*/
+    INST_SUBC,/*Subtract with carry*/
     INST_MUL,/*Multiply*/
     INST_IMUL,/*Unsigned Multiplication */
     INST_DIV,/* Division */

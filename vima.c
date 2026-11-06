@@ -1,4 +1,5 @@
 #include "vima.h"
+#include "./vasm/lexer.h"
 
 Inst program[] = {
     DEF_INST_PUSH(5),
@@ -69,49 +70,55 @@ void read_program_from_file(Machine *machine,char *file_path){
     fclose(file);
 
 }
+void run_instruction(Machine *machine){
+    int a,b;
+    for (size_t ip = 0; ip< PROGRAM_SIZE; ip++){
+            switch (machine->instructions[ip].type) {
+                case INST_PUSH:
+                    push(machine,machine->instructions[ip].value);
+                    break;
+                case INST_POP:
+                    pop(machine);
+                    break;
+                case INST_ADD:
+                    a = pop(machine);
+                    b = pop(machine);
+                    push(machine,a + b);
+                    break;
+                case INST_SUB:
+                    a = pop(machine);
+                    b = pop(machine);
+                    push(machine,b - a);
+                    break;
+                case INST_MUL:
+                    a = pop(machine);
+                    b = pop(machine);
+                    push(machine,a * b);
+                    break;
+                case INST_DIV:
+                    a = pop(machine);
+                    b = pop(machine);
+                    push(machine,b / a);
+                    break;
+                case INST_PRINT:
+                    printf("%d\n",pop(machine));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+}
 int main(){
 
     Machine *machine = init_machine();
-    int a,b;
     write_program_to_file("test.vm");
     read_program_from_file(machine,"test.vm");
-    for (size_t ip = 0; ip< PROGRAM_SIZE; ip++){
-        switch (machine->instructions[ip].type) {
-            case INST_PUSH:
-                push(machine,machine->instructions[ip].value);
-                break;
-            case INST_POP:
-                pop(machine);
-                break;
-            case INST_ADD:
-                a = pop(machine);
-                b = pop(machine);
-                push(machine,a + b);
-                break;
-            case INST_SUB:
-                a = pop(machine);
-                b = pop(machine);
-                push(machine,b - a);
-                break;
-            case INST_MUL:
-                a = pop(machine);
-                b = pop(machine);
-                push(machine,a * b);
-                break;
-            case INST_DIV:
-                a = pop(machine);
-                b = pop(machine);
-                push(machine,b / a);
-                break;
-            case INST_PRINT:
-                printf("%d\n",pop(machine));
-                break;
-            default:
-                break;
-        }
-    }
-    
+    run_instruction(machine);
     print_stack(machine);
+
+    Token *tokens = lexer("test.vasm");
+    print_tokens(tokens);
 
     return 0;
 

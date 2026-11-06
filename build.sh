@@ -1,2 +1,2 @@
 set -xe
-gcc vima.c constructors.c -o vima -Wall -Wextra
+gcc vima.c constructors.c ./vasm/lexer.c -o vima -Wall -Wextra
