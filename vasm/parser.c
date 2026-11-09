@@ -54,14 +54,27 @@ Parser *parser(Token *tokens){
                 inst->op = type;
                 inst->line = tokens[i].line;
 
+                // handle a push instruction 
                 if (type == OP_PUSH){
                     if (tokens[i+1].type != TYPE_INT){
                         fprintf(stderr, "Error : Expected integer after %s , line %d\n"
                                 ,tokens[i].value,tokens[i].line);
                     }
+                    inst->operand.imed = atoi(tokens[i+1].value);
+                    inst->operand.operandtype = IMMEDIATE;
                 }
 
-                inst->operand.imed = atoi(tokens[i+1].value);
+                // handle a pop instruction .. pop goes to a register 
+                if (type == OP_POP){
+                    if (tokens[i+1].type != TYPE_REG){
+                        fprintf(stderr, "Error : Expected Register after %s , line %d\n"
+                                ,tokens[i].value,tokens[i].line);
+                    }
+                    inst->operand.imed = atoi(tokens[i+1].value);
+                    inst->operand.operandtype = REGISTER;
+
+                }
+
 
                 parser->instructions[instruction_index] = *inst;
                 parser->instr_count += 1;
@@ -69,7 +82,6 @@ Parser *parser(Token *tokens){
                 free(inst);
 
                 i += 2;
-                printf("--- %d\n",i);
 
                 break;
 

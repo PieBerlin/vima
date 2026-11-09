@@ -18,14 +18,19 @@ typedef enum {
     OP_UNKNOWN,
 }OpType;
 
+typedef enum{
+    IMMEDIATE,
+    REGISTER,
+    LABEL,
+    MEMORY,
+
+}OperandType;
+
 typedef struct {
     uint64_t imed; // for immediate
-    /*
-     * int reg ;
-     * char label[64]
-     * OperandType // Registers , immediate , .label or mem
-     *
-     */
+    int reg ;
+    char label[64];
+    OperandType operandtype ;// Registers , immediate , .label or mem
 
 }Operand;
 
