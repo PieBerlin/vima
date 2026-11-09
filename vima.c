@@ -1,5 +1,6 @@
 #include "vima.h"
 #include "./vasm/lexer.h"
+#include "./vasm/parser.h"
 
 Inst program[] = {
     DEF_INST_PUSH(5),
@@ -119,6 +120,9 @@ int main(){
 
     Token *tokens = lexer("test.vasm");
     print_tokens(tokens);
+
+    Parser *p = parser(tokens);
+    print_instructions(p);
 
     return 0;
 

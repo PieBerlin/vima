@@ -15,15 +15,6 @@ FILE *open_file(char *filename,int *file_length){
     return file;
 }
 
-TokenType check_keyword(char *word){
-    if (strcmp(word,"push") == 0)
-        return TYPE_PUSH;
-    else if(strcmp(word,"pop") == 0)
-        return TYPE_POP;
-    else 
-        return TYPE_INVALID;
-
-}
 
 Token *generate_keyword(char *buffer,int *current_index){
     char *word = malloc(sizeof(char) * 32);
@@ -40,8 +31,7 @@ Token *generate_keyword(char *buffer,int *current_index){
     // printf("%s %d\n",word,strlen(word));
     Token *token = malloc(sizeof(Token));
     
-    TokenType type = check_keyword(word);
-    // assert(type != TYPE_INVALID && "Error Invalid instruction");
+    TokenType type = TYPE_IDENT;
     token->type = type;
     token->value = malloc(sizeof(char) * index);
     strcpy(token->value,word);
@@ -79,27 +69,21 @@ void print_tokens(Token *tokens){
     int index = 0;
     while(tokens[index].type != END_OF_TOKENS){
         switch(tokens[index].type){
-            case TYPE_PUSH:
-                printf("TOKEN TYPE PUSH : VALUE: %s LINE: %d, CHARACTER : %d\n "
+            case TYPE_IDENT:
+                printf("TOKEN TYPE IDENT : VALUE: %s LINE: %d, CHARACTER : %d\n "
                        , tokens[index].value,
-                        tokens[index].line,tokens[index].character);
+                        tokens[index].line,tokens[index].col);
                 index++;
                 break;
             case TYPE_INT:
                 printf("TOKEN TYPE INT : VALUE: %s LINE: %d, CHARACTER : %d\n "
                        , tokens[index].value,
-                        tokens[index].line,tokens[index].character);
+                        tokens[index].line,tokens[index].col);
                 index++;
                 break;
-            case TYPE_POP:
-                printf("TOKEN TYPE POP : VALUE: %s LINE: %d, CHARACTER : %d\n "
-                       , tokens[index].value,
-                        tokens[index].line,tokens[index].character);
-                index++;
-                break;
-            case TYPE_SEPARATOR:
-                printf("TOKEN TYPE SEPARATOR : VALUE %s LINE %d, CHARACTER : %d\n",
-                        tokens[index].value,tokens[index].line,tokens[index].character);
+            case TYPE_COMMA:
+                printf("TOKEN TYPE COMMA : VALUE %s LINE %d, CHARACTER : %d\n",
+                        tokens[index].value,tokens[index].line,tokens[index].col);
                 index++;
                 break;
             default:
@@ -108,13 +92,12 @@ void print_tokens(Token *tokens){
         }
 
     }
-    return;
         
 }
 
-Token *generate_separator(char value){
+Token *generate_separator(char value,TokenType type){
     Token *token = malloc(sizeof(Token));
-    token->type = TYPE_SEPARATOR;
+    token->type = type;
     token->value = malloc(sizeof(char) * 2);
     token->value[0] = value;
     token->value[1] = '\0';
@@ -141,39 +124,41 @@ Token *lexer(char *filename){
     *current_index = 0;
     
     int line = 1;
-    int character = 1;
+    int col = 1;
 
     while (buffer[*current_index] != '\0'){
         Token *token; 
         if (buffer[*current_index] == '\n'){
             line++;
-            character = 1;
+            col = 1;
         }
         if (isalpha(buffer[*current_index])){
             token = generate_keyword(buffer,current_index);
-            token -> character = character;
+            token -> col = col;
             token->line = line;
             tokens[tokens_index] = *token;
-            character++;
+            col++;
             tokens_index++;
+            // free(token->value);
             free(token);
         }else if(isdigit(buffer[*current_index])){
             token = generate_number(buffer,current_index);
-            token->character = character;
+            token->col = col;
             token->line = line;
             tokens[tokens_index] = *token;
-            character++;
+            col++;
             tokens_index++;
+            // free(token->value);
             free(token);
         }else if(buffer[*current_index] == ',') {
-            printf("We get here\n");
-            token = generate_separator(buffer[*current_index]);
-            token->character = character;
+            token = generate_separator(buffer[*current_index], TYPE_COMMA);
+            token->col = col;
             token->line = line;
             tokens[tokens_index] = *token;
-            character++;
+            col++;
             tokens_index++;
             *current_index += 1;
+            // free(token->value);
             free(token);
 
         } else {
