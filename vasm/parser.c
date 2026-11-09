@@ -28,9 +28,9 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("OPcode : %d Operand : \n",
-                parser->instructions[i].op);
-               // parser->instructions[i].operand.imed);
+        printf("OPcode : %d Operand : %lu \n",
+                parser->instructions[i].op,
+                parser->instructions[i].operand.imed);
                //
         i++;
     }
