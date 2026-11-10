@@ -1,6 +1,7 @@
 #include "vima.h"
 #include "./vasm/lexer.h"
 #include "./vasm/parser.h"
+#include "./vasm/generatebytes.h"
 
 Instruction program[] = {
     { .op = OP_PUSH, .operand.imed = 9, .operand.operandtype = OPERAND_IMMEDIATE},
@@ -36,7 +37,7 @@ void print_stack(Machine *machine){
     printf("-----------TOP OF STACK----------\n");
 }
 
-void write_program_to_file(char *file_path){
+/* void write_program_to_file(char *file_path){
     FILE *file  = fopen(file_path,"wb");
 
     if (file == NULL){
@@ -48,8 +49,11 @@ void write_program_to_file(char *file_path){
 
     fclose(file);
 
-}
+}*/
 
+
+/* This functions reads instructions in bytes from a file.
+ * The bytes instuctions are then run in the virtual machine */
 void read_program_from_file(Machine *machine,char *file_path){
     FILE  *file = fopen(file_path,"rb");
     if (file == NULL){
@@ -57,7 +61,7 @@ void read_program_from_file(Machine *machine,char *file_path){
         exit(1);
     }
 
-    Instruction *instruction = malloc(sizeof(Instruction) * MAX_STACK_SIZE);
+    Instruction *instruction = malloc(sizeof(Instruction) * MAX_INSTRUCTION_SIZE);
 
     fseek(file,0,SEEK_END);
     int length = ftell(file);
@@ -92,16 +96,17 @@ void run_instruction(Machine *machine){
 int main(){
 
     Machine *machine = init_machine();
-    write_program_to_file("test.vm");
-    read_program_from_file(machine,"test.vm");
-    run_instruction(machine);
-    print_stack(machine);
 
     Token *tokens = lexer("test.vasm");
     print_tokens(tokens);
 
     Parser *p = parser(tokens);
     print_instructions(p);
+
+    write_program_to_file(p,"test.vm");
+    read_program_from_file(machine,"test.vm");
+    run_instruction(machine);
+    print_stack(machine);
 
     return 0;
 
