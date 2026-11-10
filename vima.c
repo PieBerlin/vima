@@ -3,12 +3,6 @@
 #include "./vasm/parser.h"
 #include "./vasm/generatebytes.h"
 
-Instruction program[] = {
-    { .op = OP_PUSH, .operand.imed = 9, .operand.operandtype = OPERAND_IMMEDIATE},
-    { .op = OP_PUSH, .operand.imed = 7, .operand.operandtype = OPERAND_IMMEDIATE}
-}; 
-#define PROGRAM_SIZE (sizeof(program)/sizeof(program[0]))
-
 
 void push(Machine *machine,int value){
     if (machine->stack_size >= MAX_STACK_SIZE){

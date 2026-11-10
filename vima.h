@@ -27,14 +27,6 @@ typedef struct {
 
 
 
-#define DEF_INST_PUSH(x) {.type = INST_PUSH, .value = x}
-#define DEF_INST_POP {.type = INST_POP }
-#define DEF_INST_ADD {.type = INST_ADD }
-#define DEF_INST_SUB {.type = INST_SUB }
-#define DEF_INST_MUL {.type = INST_MUL }
-#define DEF_INST_DIV {.type = INST_DIV }
-#define DEF_INST_PRINT {.type = INST_PRINT } 
-
 Machine *init_machine();
 
 
