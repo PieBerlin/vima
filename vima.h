@@ -6,6 +6,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "instruction.h"
+
 #define MAX_STACK_SIZE 1024
 
 typedef enum {
@@ -59,11 +61,6 @@ typedef enum {
     INST_HALT,/**/
 
 }Inst_Set;
-typedef struct Inst{
-    Inst_Set type;
-    int value;
-
-}Inst;
 
 
 typedef struct CPU{
@@ -76,7 +73,7 @@ typedef struct {
     int stack[MAX_STACK_SIZE];
     int stack_size;
     int program_size;
-    Inst *instructions;
+    Instruction *instructions;
 }Machine;
 
 

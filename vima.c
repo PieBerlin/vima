@@ -2,11 +2,9 @@
 #include "./vasm/lexer.h"
 #include "./vasm/parser.h"
 
-Inst program[] = {
-    DEF_INST_PUSH(5),
-    DEF_INST_PUSH(10),
-    DEF_INST_ADD,
-    DEF_INST_PRINT
+Instruction program[] = {
+    { .op = OP_PUSH, .operand.imed = 9, .operand.operandtype = OPERAND_IMMEDIATE},
+    { .op = OP_PUSH, .operand.imed = 7, .operand.operandtype = OPERAND_IMMEDIATE}
 }; 
 #define PROGRAM_SIZE (sizeof(program)/sizeof(program[0]))
 
@@ -31,9 +29,11 @@ int pop(Machine *machine){
 
 
 void print_stack(Machine *machine){
+    printf("---------END OF STACK------------\n");
     for (int i = 0; i < machine->stack_size; i++){
         printf("%d#\t%d\n",i+1,machine->stack[i]);
     }
+    printf("-----------TOP OF STACK----------\n");
 }
 
 void write_program_to_file(char *file_path){
@@ -57,52 +57,31 @@ void read_program_from_file(Machine *machine,char *file_path){
         exit(1);
     }
 
-    Inst *instruction = malloc(sizeof(Inst) * MAX_STACK_SIZE);
+    Instruction *instruction = malloc(sizeof(Instruction) * MAX_STACK_SIZE);
 
     fseek(file,0,SEEK_END);
     int length = ftell(file);
     fseek(file,0,SEEK_SET);
 
-    fread(instruction,sizeof(Inst),length / 8,file);
+    fread(instruction,sizeof(Instruction),length / sizeof(Instruction),file);
 
-    machine->program_size = length / 8; // 8 is size of each instruction
+    machine->program_size = length / sizeof(Instruction); // 8 is size of each instruction
     machine->instructions = instruction;
 
     fclose(file);
 
 }
 void run_instruction(Machine *machine){
-    int a,b;
     for (size_t ip = 0; ip< PROGRAM_SIZE; ip++){
-            switch (machine->instructions[ip].type) {
-                case INST_PUSH:
-                    push(machine,machine->instructions[ip].value);
+            switch (machine->instructions[ip].op) {
+                case OP_PUSH:
+                    push(machine,machine->instructions[ip].operand.imed);
                     break;
-                case INST_POP:
-                    pop(machine);
+                case OP_POP:
                     break;
-                case INST_ADD:
-                    a = pop(machine);
-                    b = pop(machine);
-                    push(machine,a + b);
+                case OP_MOV:
                     break;
-                case INST_SUB:
-                    a = pop(machine);
-                    b = pop(machine);
-                    push(machine,b - a);
-                    break;
-                case INST_MUL:
-                    a = pop(machine);
-                    b = pop(machine);
-                    push(machine,a * b);
-                    break;
-                case INST_DIV:
-                    a = pop(machine);
-                    b = pop(machine);
-                    push(machine,b / a);
-                    break;
-                case INST_PRINT:
-                    printf("%d\n",pop(machine));
+                case OP_PRINT:
                     break;
                 default:
                     break;

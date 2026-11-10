@@ -5,10 +5,10 @@
 
 
 
-OpType optype_from_char(char *str){
-    if (strcmp(str,"push") == 0)
+OpType opcode_from_name(char *name){
+    if (strcmp(name,"push") == 0)
         return OP_PUSH;
-    else if (strcmp(str,"pop") == 0)
+    else if (strcmp(name,"pop") == 0)
         return OP_POP;
 
 
@@ -28,7 +28,7 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("OPcode : %d Operand : %lu \n",
+        printf("Opcode : %d Operand : %lu \n",
                 parser->instructions[i].op,
                 parser->instructions[i].operand.imed);
                //
@@ -47,7 +47,7 @@ Parser *parser(Token *tokens){
         Instruction *inst = malloc(sizeof(Instruction));
         switch(tokens[i].type){
             case TYPE_IDENT:
-                OpType type = optype_from_char(tokens[i].value);
+                OpType type = opcode_from_name(tokens[i].value);
                 if (type == OP_UNKNOWN){ 
                     fprintf(stderr, "Unknown opcode: %s line: %d",tokens[i].value,tokens[i].line);
                 }
@@ -61,7 +61,8 @@ Parser *parser(Token *tokens){
                                 ,tokens[i].value,tokens[i].line);
                     }
                     inst->operand.imed = atoi(tokens[i+1].value);
-                    inst->operand.operandtype = IMMEDIATE;
+                    inst->operand.operandtype = OPERAND_IMMEDIATE;
+
                 }
 
                 // handle a pop instruction .. pop goes to a register 
@@ -71,7 +72,7 @@ Parser *parser(Token *tokens){
                                 ,tokens[i].value,tokens[i].line);
                     }
                     inst->operand.imed = atoi(tokens[i+1].value);
-                    inst->operand.operandtype = REGISTER;
+                    inst->operand.operandtype = OPERAND_REGISTER;
 
                 }
 
