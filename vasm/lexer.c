@@ -70,26 +70,26 @@ void print_tokens(Token *tokens){
     while(tokens[index].type != END_OF_TOKENS){
         switch(tokens[index].type){
             case TYPE_IDENT:
-                printf("TOKEN TYPE IDENT : VALUE: %s LINE: %d, CHARACTER : %d\n "
-                       , tokens[index].value,
-                        tokens[index].line,tokens[index].col);
-                index++;
+                printf("TOKEN TYPE IDENT\t:");
                 break;
             case TYPE_INT:
-                printf("TOKEN TYPE INT : VALUE: %s LINE: %d, CHARACTER : %d\n "
-                       , tokens[index].value,
-                        tokens[index].line,tokens[index].col);
-                index++;
+                printf("TOKEN TYPE INT\t\t:");
                 break;
             case TYPE_COMMA:
-                printf("TOKEN TYPE COMMA : VALUE %s LINE %d, CHARACTER : %d\n",
-                        tokens[index].value,tokens[index].line,tokens[index].col);
-                index++;
+                printf("TOKEN TYPE COMMA\t:");
+                break;
+            case TYPE_REG:
+                printf("TOKEN TYPE REG\t\t:");
                 break;
             default:
-                index++;
                 break;
         }
+
+
+        printf("VALUE %s LINE %d, COLUMN : %d\n",
+                tokens[index].value,tokens[index].line,tokens[index].col);
+        index++;
+
 
     }
         
@@ -103,6 +103,19 @@ Token *generate_separator(char value,TokenType type){
     token->value[1] = '\0';
 
     return token;
+}
+
+Token *generate_register(char *buffer,int *current_index){
+    Token *token  = malloc(sizeof(Token));
+    token->type = TYPE_REG;
+    token->value = malloc(sizeof(char) * 3);
+
+    token->value[0] = 'R';
+    token->value[1] = buffer[*current_index];
+    token->value[2] = '\0';
+
+    return token;
+
 }
 
 Token *lexer(char *filename){
@@ -131,6 +144,28 @@ Token *lexer(char *filename){
         if (buffer[*current_index] == '\n'){
             line++;
             col = 1;
+        }
+        if((buffer[*current_index] == 'R')){
+            /*Check the next character if its a register RO-R8.
+             * If not go back and check maybe its an identifier */
+            *current_index += 1;
+            if(isdigit(buffer[*current_index])){
+                token = generate_register(buffer,current_index);
+                token -> col = col;
+                token->line = line;
+                tokens[tokens_index] = *token;
+                col++;
+                *current_index += 1;
+                tokens_index++;
+                // free(token->value);
+                free(token);
+
+            }else{
+                *current_index -= 2;
+            printf("%c\n",buffer[*current_index]);
+
+            }
+
         }
         if (isalpha(buffer[*current_index])){
             token = generate_keyword(buffer,current_index);

@@ -12,17 +12,22 @@
 #define MAX_INSTRUCTION_SIZE 1024
 
 
-typedef struct CPU{
-    // Cache L1,L2,L3;
-    // Registers Reg;
-
-}CPU;
-
 typedef struct {
-    int stack[MAX_STACK_SIZE];
-    int stack_size;
+
+    uint64_t regs[16];
+    uint64_t stack[MAX_STACK_SIZE];
+    uint64_t sp;// stack pointer
     uint64_t program_size;/* This tells us how many instuctions we have */
     Instruction *instructions;
+    /*
+     * uint64_t pc; // program counter
+     * uint64_t fp; frame pointer
+     * uint64_t flags 
+     * uint64_t heap_ptr 
+     * int running;
+     * int haltcode ;
+     *
+     * */
 }Machine;
 
 

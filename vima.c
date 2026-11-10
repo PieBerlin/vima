@@ -5,28 +5,28 @@
 
 
 void push(Machine *machine,int value){
-    if (machine->stack_size >= MAX_STACK_SIZE){
+    if (machine->sp >= MAX_STACK_SIZE){
         fprintf(stderr, "ERROR: Stack is Full\n");
         exit(1);
     }
-    machine->stack[machine->stack_size] = value;
-    machine->stack_size++;
+    machine->stack[machine->sp] = value;
+    machine->sp++;
 }
 
 int pop(Machine *machine){
-    if (machine->stack_size <= 0){
+    if (machine->sp <= 0){
         fprintf(stderr, "ERROR: Stack is Empty\n");
         exit(1);
     }
-    machine->stack_size--;
-    return machine->stack[machine->stack_size];
+    machine->sp--;
+    return machine->stack[machine->sp];
 }
 
 
 void print_stack(Machine *machine){
     printf("---------BOTTOM OF STACK------------\n");
-    for (int i = 0; i < machine->stack_size; i++){
-        printf("%d#\t%d\n",i+1,machine->stack[i]);
+    for (uint64_t i = 0; i < machine->sp; i++){
+        printf("%lu#\t%lu\n",i+1,machine->stack[i]);
     }
     printf("-----------TOP OF STACK----------\n");
 }
@@ -94,13 +94,18 @@ int main(){
     Token *tokens = lexer("test.vasm");
     print_tokens(tokens);
 
-    Parser *p = parser(tokens);
-    print_instructions(p);
+    (void)machine;
 
-    write_program_to_file(p,"test.vm");
-    read_program_from_file(machine,"test.vm");
-    run_instruction(machine);
-    print_stack(machine);
+    // Parser *p = parser(tokens);
+    // print_instructions(p);
+    //
+    // write_program_to_file(p,"test.vm");
+    //
+    // free(p);
+    //
+    // read_program_from_file(machine,"test.vm");
+    // run_instruction(machine);
+    // print_stack(machine);
 
     return 0;
 
