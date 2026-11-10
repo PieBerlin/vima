@@ -4,14 +4,20 @@
 #include <stdint.h>
 
 typedef enum {
-    OP_MOV,
-    OP_POP,
-    OP_PUSH,
-    OP_LABEL,
+    OP_UNKNOWN,OP_HALT,OP_NOP,OP_ADD,OP_SUBOP_MUL,OP_DIV,OP_MOD,
+    OP_AND,OP_OR,OP_XOR,OP_NOT,OP_SHL,OP_SHR,
+    OP_MOV,OP_LOADI,OP_LOAD,OP_STORE,OP_LOAD8,OP_STORE8,
+    OP_CMP,OP_JMP,OP_JZ,OP_JNZ,OP_JE,OP_JNE,OP_JGT,OP_JLT,
+    OP_CALL,OP_RET,OP_PUSH,OP_POP,OP_SYSCALL,OP_MALLOC,
+    OP_ENTER, OP_LEAVE,OP_PRINT,
+    OP_LABEL, // "main:"
     OP_DB,
+    OP_DW,
+    OP_DQ,
+    OP_ASCII,
+    OP_ORG,
     OP_SECTION,
-    OP_PRINT,
-    OP_UNKNOWN,
+    /* Add more opcodes for future instruction */
 }OpType;
 
 typedef enum{

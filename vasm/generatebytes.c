@@ -3,7 +3,7 @@
 
 
 
-/* THis function write bytes to a file which is will read by a vm to run them */
+/* This function write bytes to a file which is will read by a vm to run them */
 void write_program_to_file(Parser *parser,char *file_path){
     FILE *file  = fopen(file_path,"wb");
 

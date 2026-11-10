@@ -11,58 +11,6 @@
 #define MAX_STACK_SIZE 1024
 #define MAX_INSTRUCTION_SIZE 1024
 
-typedef enum {
-    INST_NOP ,/*No operation */
-    INST_MOV,/*Move value to , from ,between registers/memory */
-    INST_CMOV,/* Conditional mov */
-    INST_PUSH,/* Push value to stack */
-    INST_POP,/*Pop value from stack */
-    INST_BSWAP,/*Byte swap*/
-    INST_XCHG,/*Exchange*/
-    INST_INC,/* Increeament */
-    INST_DEC,/* Decreament*/
-    INST_NEG,/*Negate*/
-    INST_CMP,/*Compare*/
-    INST_ADD,/*Add*/
-    INST_ADDC, /*ADD with carry*/
-    INST_SUB,/*Subtract*/
-    INST_SUBC,/*Subtract with carry*/
-    INST_MUL,/*Multiply*/
-    INST_IMUL,/*Unsigned Multiplication */
-    INST_DIV,/* Division */
-    INST_IDIV,/*Unsigned divition */
-    INST_AND,/*ADD Bitwise Operation */
-    INST_OR,/**/
-    INST_XOR,/**/
-    INST_NOT,/**/
-    INST_SHR,/*SHift right*/
-    INST_SHL,/*SHift Left*/
-    INST_SAR,/*Shift Arithmetic */
-    INST_SAL,/**/
-    INST_ROR,/*Rotate right*/
-    INST_ROL,/*Rotate Left*/
-    INST_RCR,/**/
-    INST_RCL,/**/
-    INST_BT,/*Bit Test*/
-    INST_BTS,/* Bit test and set */
-    INST_BTR,/*Bit test and reset */
-    INST_JMP,/*Unconditional jump */
-    INST_JE,/*Jump Equals*/
-    INST_JNE,/*Jump not equal */
-    INST_JC,/*Jump carry*/
-    INST_JNC,/*Jump  not carrry*/
-    INST_J,/*Other jump*/
-    INST_LOOP,/**/
-    INST_LOOPE, /*Loop with ECX*/
-    INST_LOOPNE,/**/
-    INST_CALL, /*Call subroutine*/
-    INST_RET,/**/
-    INST_CPUID,/* CPU information */
-    INST_PRINT,/**/
-    INST_HALT,/**/
-
-}Inst_Set;
-
 
 typedef struct CPU{
     // Cache L1,L2,L3;
@@ -73,7 +21,7 @@ typedef struct CPU{
 typedef struct {
     int stack[MAX_STACK_SIZE];
     int stack_size;
-    int program_size;
+    uint64_t program_size;/* This tells us how many instuctions we have */
     Instruction *instructions;
 }Machine;
 

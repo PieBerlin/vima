@@ -30,7 +30,7 @@ int pop(Machine *machine){
 
 
 void print_stack(Machine *machine){
-    printf("---------END OF STACK------------\n");
+    printf("---------BOTTOM OF STACK------------\n");
     for (int i = 0; i < machine->stack_size; i++){
         printf("%d#\t%d\n",i+1,machine->stack[i]);
     }
@@ -76,7 +76,7 @@ void read_program_from_file(Machine *machine,char *file_path){
 
 }
 void run_instruction(Machine *machine){
-    for (size_t ip = 0; ip< PROGRAM_SIZE; ip++){
+    for (uint64_t ip = 0; ip < machine->program_size; ip++){
             switch (machine->instructions[ip].op) {
                 case OP_PUSH:
                     push(machine,machine->instructions[ip].operand.imed);
