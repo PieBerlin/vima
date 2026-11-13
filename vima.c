@@ -57,7 +57,12 @@ void run_instruction(Machine *machine){
         int reg;
             switch (machine->instructions[ip].op) {
                 case OP_PUSH:
-                    push(machine,machine->instructions[ip].operand.imed);
+                    if (machine->instructions[ip].operand.operandtype == OPERAND_IMMEDIATE)
+                        push(machine,machine->instructions[ip].operand.imed);
+                    else if (machine->instructions[ip].operand.operandtype == OPERAND_REGISTER){
+                        reg = machine->instructions[ip].operand.reg;
+                        push(machine,machine->regs[reg]);
+                    }
                     break;
                 case OP_POP:
                     reg = machine->instructions[ip].operand.reg;

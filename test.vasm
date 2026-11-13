@@ -4,3 +4,6 @@ push 40
 push 5
 pop R0 
 mov R1 , 20
+push R1  
+push R0 
+push R1

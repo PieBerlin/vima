@@ -72,12 +72,19 @@ Parser *parser(Token *tokens){
 
                 // handle a push instruction 
                 if (type == OP_PUSH){
-                    if (tokens[i+1].type != TYPE_INT){
-                        fprintf(stderr, "Error : Expected integer after %s , line %d\n"
+                    if (tokens[i+1].type != TYPE_INT && tokens[i+1].type != TYPE_REG ){
+                        fprintf(stderr, "Error : Expected Integer or Register after %s , line %d\n"
                                 ,tokens[i].value,tokens[i].line);
+                        exit(1);
                     }
-                    inst->operand.imed = atoi(tokens[i+1].value);
-                    inst->operand.operandtype = OPERAND_IMMEDIATE;
+                    if (tokens[i+1].type == TYPE_INT){
+                        inst->operand.imed = atoi(tokens[i+1].value);
+                        inst->operand.operandtype = OPERAND_IMMEDIATE;
+                    }else if (tokens[i+1].type == TYPE_REG){
+                        inst->operand.imed = atoi(tokens[i+1].value);
+                        inst->operand.operandtype = OPERAND_REGISTER;
+
+                    }
 
 
                     i += 2;
