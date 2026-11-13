@@ -10,6 +10,8 @@ OpType opcode_from_name(char *name){
         return OP_PUSH;
     else if (strcmp(name,"pop") == 0)
         return OP_POP;
+    else if (strcmp(name,"mov") == 0)
+        return OP_MOV;
 
 
     return OP_UNKNOWN;
@@ -63,6 +65,7 @@ Parser *parser(Token *tokens){
                 OpType type = opcode_from_name(tokens[i].value);
                 if (type == OP_UNKNOWN){ 
                     fprintf(stderr, "Unknown opcode: %s line: %d",tokens[i].value,tokens[i].line);
+                    exit(1);
                 }
                 inst->op = type;
                 inst->line = tokens[i].line;
@@ -76,13 +79,17 @@ Parser *parser(Token *tokens){
                     inst->operand.imed = atoi(tokens[i+1].value);
                     inst->operand.operandtype = OPERAND_IMMEDIATE;
 
+
+                    i += 2;
+
                 }
 
                 // handle a pop instruction .. pop goes to a register 
-                if (type == OP_POP){
+                else if (type == OP_POP){
                     if (tokens[i+1].type != TYPE_REG){
                         fprintf(stderr, "Error : Expected Register after %s , line %d\n"
                                 ,tokens[i].value,tokens[i].line);
+                        exit(1);
                     }
                     /*  Get the text in the type reg; 
                         Take the number part and put it int the operand.reg
@@ -93,6 +100,29 @@ Parser *parser(Token *tokens){
                     inst->operand.reg = atoi(reg+1);
                     inst->operand.operandtype = OPERAND_REGISTER;
 
+                    i += 2;
+
+                }
+                /* Handle move instruction */
+                else if (type == OP_MOV){
+                    // check the next token 
+                    if(tokens[i+1].type != TYPE_REG || tokens[i+2].type != TYPE_COMMA || 
+                            tokens[i+3].type != TYPE_INT){
+                        printf("Invalid arguments for mov instruction line %d\n",
+                                tokens[i].line);
+                        exit(1);
+                    }
+                    /*mov has two operands, well use reg and Immediate
+                     * We'll keep in mind that mov has two arguments 
+                     * the firdt is the register 
+                     * the second in an Immediate value */
+                    char *reg = tokens[i + 1].value;
+                    inst->operand.reg = atoi(reg+1);
+                    inst->operand.operandtype = OPERAND_REGISTER;
+                    inst->operand.imed = atoi(tokens[i+3].value);
+                    
+                    i += 4;
+
                 }
 
 
@@ -101,7 +131,6 @@ Parser *parser(Token *tokens){
                 instruction_index++;
                 free(inst);
 
-                i += 2;
 
                 break;
 

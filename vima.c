@@ -2,25 +2,8 @@
 #include "./vasm/lexer.h"
 #include "./vasm/parser.h"
 #include "./vasm/generatebytes.h"
+#include "./assembly.h"
 
-
-void push(Machine *machine,int value){
-    if (machine->sp >= MAX_STACK_SIZE){
-        fprintf(stderr, "ERROR: Stack is Full\n");
-        exit(1);
-    }
-    machine->stack[machine->sp] = value;
-    machine->sp++;
-}
-
-int pop(Machine *machine){
-    if (machine->sp <= 0){
-        fprintf(stderr, "ERROR: Stack is Empty\n");
-        exit(1);
-    }
-    machine->sp--;
-    return machine->stack[machine->sp];
-}
 
 
 void print_stack(Machine *machine){
@@ -71,15 +54,19 @@ void read_program_from_file(Machine *machine,char *file_path){
 }
 void run_instruction(Machine *machine){
     for (uint64_t ip = 0; ip < machine->program_size; ip++){
+        int reg;
             switch (machine->instructions[ip].op) {
                 case OP_PUSH:
                     push(machine,machine->instructions[ip].operand.imed);
                     break;
                 case OP_POP:
-                    int reg = machine->instructions[ip].operand.reg;
+                    reg = machine->instructions[ip].operand.reg;
                     machine->regs[reg] = pop(machine);
                     break;
                 case OP_MOV:
+                    reg = machine->instructions[ip].operand.reg;
+                    uint64_t value = machine->instructions[ip].operand.imed;
+                    mov(machine,reg,value);
                     break;
                 case OP_PRINT:
                     break;
@@ -114,9 +101,9 @@ int main(){
     print_instructions(p);
     //
     write_program_to_file(p,"test.vm");
-    //
+
     free(p);
-    //
+
     read_program_from_file(machine,"test.vm");
     run_instruction(machine);
     print_stack(machine);
