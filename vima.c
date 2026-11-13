@@ -76,6 +76,8 @@ void run_instruction(Machine *machine){
                     push(machine,machine->instructions[ip].operand.imed);
                     break;
                 case OP_POP:
+                    int reg = machine->instructions[ip].operand.reg;
+                    machine->regs[reg] = pop(machine);
                     break;
                 case OP_MOV:
                     break;
@@ -87,6 +89,18 @@ void run_instruction(Machine *machine){
         }
 
 }
+
+void print_registers(Machine *machine){
+    printf("\n\n");
+    printf("############## REGISTERS #################\n");
+
+    for (int i = 0; i < MAX_REGISTERS; i++){
+        printf("#\tRegister R%d\tValue: %lu\n",i,machine->regs[i]);
+    }
+    printf("##########################################");
+    printf("\n\n");
+
+}
 int main(){
 
     Machine *machine = init_machine();
@@ -96,16 +110,17 @@ int main(){
 
     (void)machine;
 
-    // Parser *p = parser(tokens);
-    // print_instructions(p);
+    Parser *p = parser(tokens);
+    print_instructions(p);
     //
-    // write_program_to_file(p,"test.vm");
+    write_program_to_file(p,"test.vm");
     //
-    // free(p);
+    free(p);
     //
-    // read_program_from_file(machine,"test.vm");
-    // run_instruction(machine);
-    // print_stack(machine);
+    read_program_from_file(machine,"test.vm");
+    run_instruction(machine);
+    print_stack(machine);
+    print_registers(machine);
 
     return 0;
 

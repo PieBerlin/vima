@@ -8,13 +8,16 @@
 
 #include "instruction.h"
 
-#define MAX_STACK_SIZE 1024
+#define MAX_STACK_SIZE       1024
 #define MAX_INSTRUCTION_SIZE 1024
+#define MAX_REGISTERS           16
 
 
 typedef struct {
 
-    uint64_t regs[16];
+    /* For now usable registers are from 0-8 
+     * I'll expand in case the needs increases*/
+    uint64_t regs[MAX_REGISTERS];
     uint64_t stack[MAX_STACK_SIZE];
     uint64_t sp;// stack pointer
     uint64_t program_size;/* This tells us how many instuctions we have */

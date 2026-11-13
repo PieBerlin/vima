@@ -28,10 +28,23 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("Opcode : %d Operand : %lu \n",
-                parser->instructions[i].op,
-                parser->instructions[i].operand.imed);
-               //
+        printf("Opcode : %d ",parser->instructions[i].op);
+        switch(parser->instructions[i].operand.operandtype){
+            case OPERAND_NONE:
+                break;
+            case OPERAND_IMMEDIATE:
+                printf("Operand Immediate : %lu\n",parser->instructions[i].operand.imed);
+                break;
+            case OPERAND_REGISTER:
+                printf("Operand Register : R%d\n",parser->instructions[i].operand.reg);
+                break;
+            case OPERAND_MEMORY:
+                break;
+            case OPERAND_LABEL:
+                break;
+
+
+        }
         i++;
     }
 
@@ -71,7 +84,13 @@ Parser *parser(Token *tokens){
                         fprintf(stderr, "Error : Expected Register after %s , line %d\n"
                                 ,tokens[i].value,tokens[i].line);
                     }
+                    /*  Get the text in the type reg; 
+                        Take the number part and put it int the operand.reg
+                        Current usable registers will be 0-8
+                    */
                     inst->operand.imed = atoi(tokens[i+1].value);
+                    char *reg = tokens[i + 1].value;
+                    inst->operand.reg = atoi(reg+1);
                     inst->operand.operandtype = OPERAND_REGISTER;
 
                 }
