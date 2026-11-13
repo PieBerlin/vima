@@ -60,6 +60,7 @@ Parser *parser(Token *tokens){
     int instruction_index = 0;
     while(tokens[i].type != END_OF_TOKENS){
         Instruction *inst = malloc(sizeof(Instruction));
+        char *reg = malloc(sizeof(char) * 3);
         switch(tokens[i].type){
             case TYPE_IDENT:
                 OpType type = opcode_from_name(tokens[i].value);
@@ -81,14 +82,15 @@ Parser *parser(Token *tokens){
                         inst->operand.imed = atoi(tokens[i+1].value);
                         inst->operand.operandtype = OPERAND_IMMEDIATE;
                     }else if (tokens[i+1].type == TYPE_REG){
-                        inst->operand.imed = atoi(tokens[i+1].value);
+                        strcpy(reg,tokens[i + 1].value);
+                        inst->operand.reg = atoi(reg+1);
                         inst->operand.operandtype = OPERAND_REGISTER;
 
                     }
 
 
                     i += 2;
-
+                    free(reg);
                 }
 
                 // handle a pop instruction .. pop goes to a register 
@@ -102,12 +104,12 @@ Parser *parser(Token *tokens){
                         Take the number part and put it int the operand.reg
                         Current usable registers will be 0-8
                     */
-                    inst->operand.imed = atoi(tokens[i+1].value);
-                    char *reg = tokens[i + 1].value;
+                    strcpy(reg,tokens[i + 1].value);
                     inst->operand.reg = atoi(reg+1);
                     inst->operand.operandtype = OPERAND_REGISTER;
 
                     i += 2;
+                    free(reg);
 
                 }
                 /* Handle move instruction */

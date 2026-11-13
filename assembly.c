@@ -12,13 +12,14 @@ void push(Machine *machine,int value){
     machine->sp++;
 }
 
-int pop(Machine *machine){
+uint64_t pop(Machine *machine){
     if (machine->sp <= 0){
         fprintf(stderr, "ERROR: Stack is Empty\n");
         exit(1);
     }
-    machine->sp--;
-    return machine->stack[machine->sp];
+    machine->sp -= 1;
+    return  machine->stack[machine->sp];
+
 }
 
 void mov(Machine *machine,int reg,uint64_t value){

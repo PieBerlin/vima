@@ -7,7 +7,7 @@
 #include "../instruction.h"
 
 
-#define MAX_INSTRUCTIONS    1024
+#define MAX_INSTRUCTIONS    10240
 
 
 typedef struct {

@@ -9,7 +9,7 @@
 #include "instruction.h"
 
 #define MAX_STACK_SIZE       1024
-#define MAX_INSTRUCTION_SIZE 1024
+#define MAX_INSTRUCTION_SIZE 10240
 #define MAX_REGISTERS           16
 
 

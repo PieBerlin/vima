@@ -53,8 +53,8 @@ void read_program_from_file(Machine *machine,char *file_path){
 
 }
 void run_instruction(Machine *machine){
+    int reg;
     for (uint64_t ip = 0; ip < machine->program_size; ip++){
-        int reg;
             switch (machine->instructions[ip].op) {
                 case OP_PUSH:
                     if (machine->instructions[ip].operand.operandtype == OPERAND_IMMEDIATE)
@@ -111,6 +111,7 @@ int main(){
 
     read_program_from_file(machine,"test.vm");
     run_instruction(machine);
+    printf("%lu\n",sizeof(p));
     print_stack(machine);
     print_registers(machine);
 
