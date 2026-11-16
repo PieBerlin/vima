@@ -12,6 +12,8 @@ OpType opcode_from_name(char *name){
         return OP_POP;
     else if (strcmp(name,"mov") == 0)
         return OP_MOV;
+    else if (strcmp(name,"jmp") == 0)
+        return OP_JMP;
 
 
     return OP_UNKNOWN;
@@ -31,6 +33,11 @@ void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
         printf("Opcode : %d ",parser->instructions[i].op);
+        
+        // Print a lebel with mire information
+        if(parser->instructions[i].op == OP_LABEL){
+            printf("Label definition %s\n",parser->instructions[i].label_name);
+        }
         switch(parser->instructions[i].operand.operandtype){
             case OPERAND_NONE:
                 break;
@@ -42,7 +49,8 @@ void print_instructions(Parser *parser){
                 break;
             case OPERAND_MEMORY:
                 break;
-            case OPERAND_LABEL:
+            case OPERAND_LABEL: 
+                printf("Operand Label : %s\n",parser->instructions[i].operand.label);
                 break;
 
 
@@ -63,76 +71,101 @@ Parser *parser(Token *tokens){
         char *reg = malloc(sizeof(char) * 3);
         switch(tokens[i].type){
             case TYPE_IDENT:
-                OpType type = opcode_from_name(tokens[i].value);
-                if (type == OP_UNKNOWN){ 
-                    fprintf(stderr, "Unknown opcode: %s line: %d",tokens[i].value,tokens[i].line);
-                    exit(1);
-                }
-                inst->op = type;
-                inst->line = tokens[i].line;
+                /*check for a label definition.An identifier followed by a colon  "main:" */
+                if (tokens[i + 1].type == TYPE_COLON){
+                    inst->op = OP_LABEL;
+                    // inst->label_name = malloc(sizeof(char) * 64);
+                    strcpy(inst->label_name,tokens[i].value);
 
-                // handle a push instruction 
-                if (type == OP_PUSH){
-                    if (tokens[i+1].type != TYPE_INT && tokens[i+1].type != TYPE_REG ){
-                        fprintf(stderr, "Error : Expected Integer or Register after %s , line %d\n"
-                                ,tokens[i].value,tokens[i].line);
+                    i += 2;
+
+                }else{
+
+                    OpType type = opcode_from_name(tokens[i].value);
+                    if (type == OP_UNKNOWN){ 
+                        fprintf(stderr, "Unknown opcode: %s line: %d",tokens[i].value,tokens[i].line);
                         exit(1);
                     }
-                    if (tokens[i+1].type == TYPE_INT){
-                        inst->operand.imed = atoi(tokens[i+1].value);
-                        inst->operand.operandtype = OPERAND_IMMEDIATE;
-                    }else if (tokens[i+1].type == TYPE_REG){
+                    inst->op = type;
+                    inst->line = tokens[i].line;
+
+                    // handle a push instruction 
+                    if (type == OP_PUSH){
+                        if (tokens[i+1].type != TYPE_INT && tokens[i+1].type != TYPE_REG ){
+                            fprintf(stderr, "Error : Expected Integer or Register after %s , line %d\n"
+                                    ,tokens[i].value,tokens[i].line);
+                            exit(1);
+                        }
+                        if (tokens[i+1].type == TYPE_INT){
+                            inst->operand.imed = atoi(tokens[i+1].value);
+                            inst->operand.operandtype = OPERAND_IMMEDIATE;
+                        }else if (tokens[i+1].type == TYPE_REG){
+                            strcpy(reg,tokens[i + 1].value);
+                            inst->operand.reg = atoi(reg+1);
+                            inst->operand.operandtype = OPERAND_REGISTER;
+
+                        }
+
+
+                        i += 2;
+                        free(reg);
+                    }
+
+                    // handle a pop instruction .. pop goes to a register 
+                    else if (type == OP_POP){
+                        if (tokens[i+1].type != TYPE_REG){
+                            fprintf(stderr, "Error : Expected Register after %s , line %d\n"
+                                    ,tokens[i].value,tokens[i].line);
+                            exit(1);
+                        }
+                        /*  Get the text in the type reg; 
+                            Take the number part and put it int the operand.reg
+                            Current usable registers will be 0-8
+                        */
                         strcpy(reg,tokens[i + 1].value);
                         inst->operand.reg = atoi(reg+1);
                         inst->operand.operandtype = OPERAND_REGISTER;
 
+                        i += 2;
+                        free(reg);
+
+                    }
+                    /* Handle move instruction */
+                    else if (type == OP_MOV){
+                        // check the next token 
+                        if(tokens[i+1].type != TYPE_REG || tokens[i+2].type != TYPE_COMMA || 
+                                tokens[i+3].type != TYPE_INT){
+                            printf("Invalid arguments for mov instruction line %d\n",
+                                    tokens[i].line);
+                            exit(1);
+                        }
+                        /*mov has two operands, well use reg and Immediate
+                         * We'll keep in mind that mov has two arguments 
+                         * the firdt is the register 
+                         * the second in an Immediate value */
+                        char *reg = tokens[i + 1].value;
+                        inst->operand.reg = atoi(reg+1);
+                        inst->operand.operandtype = OPERAND_REGISTER;
+                        inst->operand.imed = atoi(tokens[i+3].value);
+                        
+                        i += 4;
+
+                    }
+                    /*Handle a jump instruction */
+                    else if (type == OP_JMP) {
+                        /* Assert the next token is an identifier to jump to: */
+                        if(tokens[i + 1].type != TYPE_IDENT){
+                            fprintf(stderr, "Expected identifier after jmp line %d \n",
+                                    tokens[i].line);
+                        }
+
+                        inst->operand.operandtype = OPERAND_LABEL;
+                        strcpy(inst->operand.label,tokens[i+1].value);
+                        i += 2;
                     }
 
-
-                    i += 2;
-                    free(reg);
                 }
 
-                // handle a pop instruction .. pop goes to a register 
-                else if (type == OP_POP){
-                    if (tokens[i+1].type != TYPE_REG){
-                        fprintf(stderr, "Error : Expected Register after %s , line %d\n"
-                                ,tokens[i].value,tokens[i].line);
-                        exit(1);
-                    }
-                    /*  Get the text in the type reg; 
-                        Take the number part and put it int the operand.reg
-                        Current usable registers will be 0-8
-                    */
-                    strcpy(reg,tokens[i + 1].value);
-                    inst->operand.reg = atoi(reg+1);
-                    inst->operand.operandtype = OPERAND_REGISTER;
-
-                    i += 2;
-                    free(reg);
-
-                }
-                /* Handle move instruction */
-                else if (type == OP_MOV){
-                    // check the next token 
-                    if(tokens[i+1].type != TYPE_REG || tokens[i+2].type != TYPE_COMMA || 
-                            tokens[i+3].type != TYPE_INT){
-                        printf("Invalid arguments for mov instruction line %d\n",
-                                tokens[i].line);
-                        exit(1);
-                    }
-                    /*mov has two operands, well use reg and Immediate
-                     * We'll keep in mind that mov has two arguments 
-                     * the firdt is the register 
-                     * the second in an Immediate value */
-                    char *reg = tokens[i + 1].value;
-                    inst->operand.reg = atoi(reg+1);
-                    inst->operand.operandtype = OPERAND_REGISTER;
-                    inst->operand.imed = atoi(tokens[i+3].value);
-                    
-                    i += 4;
-
-                }
 
 
                 parser->instructions[instruction_index] = *inst;

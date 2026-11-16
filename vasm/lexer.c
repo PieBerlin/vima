@@ -81,6 +81,9 @@ void print_tokens(Token *tokens){
             case TYPE_REG:
                 printf("TOKEN TYPE REG\t\t:");
                 break;
+            case TYPE_COLON:
+                printf("TOKEN TYPE COLON\t:");
+                break;
             default:
                 break;
         }
@@ -187,6 +190,16 @@ Token *lexer(char *filename){
             free(token);
         }else if(buffer[*current_index] == ',') {
             token = generate_separator(buffer[*current_index], TYPE_COMMA);
+            token->col = col;
+            token->line = line;
+            tokens[tokens_index] = *token;
+            col++;
+            tokens_index++;
+            *current_index += 1;
+            // free(token->value);
+            free(token);
+        }else if(buffer[*current_index] == ':') {
+            token = generate_separator(buffer[*current_index], TYPE_COLON);
             token->col = col;
             token->line = line;
             tokens[tokens_index] = *token;

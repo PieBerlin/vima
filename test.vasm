@@ -1,10 +1,15 @@
-push 9 
-push 12
-push 40
-push 5
-pop R0 
-mov R1 , 20
-push R1 
-pop R4 
-pop R2 
-push 15 
+jmp main
+push 60
+
+main:
+    push 9 
+    push 12
+    push 40
+    push 5
+    pop R0 
+    mov R1 , 20
+    push R1 
+    pop R4 
+    pop R2 
+    push 15 
+    push 7 
