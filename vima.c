@@ -103,6 +103,8 @@ int main(){
     (void)machine;
 
     Parser *p = parser(tokens);
+    set_address(p);
+
     print_instructions(p);
     //
     write_program_to_file(p,"test.vm");

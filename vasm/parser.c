@@ -15,7 +15,6 @@ OpType opcode_from_name(char *name){
     else if (strcmp(name,"jmp") == 0)
         return OP_JMP;
 
-
     return OP_UNKNOWN;
 
 }
@@ -32,11 +31,12 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("Opcode : %d ",parser->instructions[i].op);
+        printf("Opcode : %d Address : %lu ",parser->instructions[i].op,parser->instructions[i].address);
         
         // Print a lebel with mire information
         if(parser->instructions[i].op == OP_LABEL){
-            printf("Label definition %s\n",parser->instructions[i].label_name);
+            printf("Label definition %s Address : %lu ",
+                    parser->instructions[i].label_name,parser->instructions[i].address);
         }
         switch(parser->instructions[i].operand.operandtype){
             case OPERAND_NONE:
@@ -74,7 +74,6 @@ Parser *parser(Token *tokens){
                 /*check for a label definition.An identifier followed by a colon  "main:" */
                 if (tokens[i + 1].type == TYPE_COLON){
                     inst->op = OP_LABEL;
-                    // inst->label_name = malloc(sizeof(char) * 64);
                     strcpy(inst->label_name,tokens[i].value);
 
                     i += 2;
@@ -207,3 +206,17 @@ Parser *parser(Token *tokens){
     return parser;
 
 }
+
+
+/* This functions goes through all instructions in the parser and sets the address */
+void set_address(Parser *parser){
+    int i = 0;
+    while (i < parser->instr_count){
+        parser->instructions[i].address = i;
+        i++;
+    }
+
+}
+
+
+

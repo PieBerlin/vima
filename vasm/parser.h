@@ -21,6 +21,7 @@ typedef struct {
 OpType opcode_from_name(char *str);
 void print_instructions(Parser *);
 Parser *parser(Token *tokens);
+void set_address(Parser *parser);
 
 
 
