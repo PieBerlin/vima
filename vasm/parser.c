@@ -35,11 +35,12 @@ void print_instructions(Parser *parser){
         
         // Print a lebel with mire information
         if(parser->instructions[i].op == OP_LABEL){
-            printf("Label definition %s Address : %lu ",
-                    parser->instructions[i].label_name,parser->instructions[i].address);
+            printf("Label definition %s ",
+                    parser->instructions[i].label_name);
         }
         switch(parser->instructions[i].operand.operandtype){
             case OPERAND_NONE:
+                printf("\n");
                 break;
             case OPERAND_IMMEDIATE:
                 printf("Operand Immediate : %lu\n",parser->instructions[i].operand.imed);
@@ -74,6 +75,7 @@ Parser *parser(Token *tokens){
                 /*check for a label definition.An identifier followed by a colon  "main:" */
                 if (tokens[i + 1].type == TYPE_COLON){
                     inst->op = OP_LABEL;
+                    inst->operand.operandtype = OPERAND_NONE;
                     strcpy(inst->label_name,tokens[i].value);
 
                     i += 2;

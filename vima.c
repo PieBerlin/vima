@@ -113,7 +113,7 @@ int main(){
 
     read_program_from_file(machine,"test.vm");
     run_instruction(machine);
-    printf("%lu\n",sizeof(p));
+    // printf("%lu\n",sizeof(p));
     print_stack(machine);
     print_registers(machine);
 
