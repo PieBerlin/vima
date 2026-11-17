@@ -3,13 +3,14 @@
 #include "./vasm/parser.h"
 #include "./vasm/generatebytes.h"
 #include "./assembly.h"
+#include "./symbol_table.h"
 
 
 
 void print_stack(Machine *machine){
     printf("---------BOTTOM OF STACK------------\n");
-    for (uint64_t i = 0; i < machine->sp; i++){
-        printf("%lu#\t%lu\n",i+1,machine->stack[i]);
+    for (int i = 0; i < machine->sp; i++){
+        printf("%i#\t%lu\n",i+1,machine->stack[i]);
     }
     printf("-----------TOP OF STACK----------\n");
 }
@@ -45,6 +46,7 @@ void read_program_from_file(Machine *machine,char *file_path){
     fseek(file,0,SEEK_SET);
 
     fread(instruction,sizeof(Instruction),length / sizeof(Instruction),file);
+    printf("Length of file %d\n",length);
 
     machine->program_size = length / sizeof(Instruction); // 8 is size of each instruction
     machine->instructions = instruction;
@@ -54,7 +56,7 @@ void read_program_from_file(Machine *machine,char *file_path){
 }
 void run_instruction(Machine *machine){
     int reg;
-    for (uint64_t ip = 0; ip < machine->program_size; ip++){
+    for (int ip = 0; ip < machine->program_size; ip++){
             switch (machine->instructions[ip].op) {
                 case OP_PUSH:
                     if (machine->instructions[ip].operand.operandtype == OPERAND_IMMEDIATE)
@@ -112,10 +114,18 @@ int main(){
     free(p);
 
     read_program_from_file(machine,"test.vm");
+    // create symbol table
+    SYMBOL_TABLE *symbol_table = malloc(sizeof(SYMBOL_TABLE) * SIZE_OF_SYMBOL_TABLE);
+    create_symbol_table(symbol_table,machine);
+
+
     run_instruction(machine);
+
     // printf("%lu\n",sizeof(p));
+    /* Print these for debuggin purposes */
     print_stack(machine);
     print_registers(machine);
+    print_symbol_table(symbol_table);
 
     return 0;
 

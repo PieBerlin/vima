@@ -11,6 +11,7 @@
 #define MAX_STACK_SIZE       1024
 #define MAX_INSTRUCTION_SIZE 10240
 #define MAX_REGISTERS           16
+#define SIZE_OF_SYMBOL_TABLE       1024
 
 
 typedef struct {
@@ -19,8 +20,8 @@ typedef struct {
      * I'll expand in case the needs increases*/
     uint64_t regs[MAX_REGISTERS];
     uint64_t stack[MAX_STACK_SIZE];
-    uint64_t sp;// stack pointer
-    uint64_t program_size;/* This tells us how many instuctions we have */
+    int sp;// stack pointer
+    int program_size;/* This tells us how many instuctions we have */
     Instruction *instructions;
     /*
      * uint64_t pc; // program counter

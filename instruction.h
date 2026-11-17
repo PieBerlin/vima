@@ -32,7 +32,7 @@ typedef enum{
 typedef struct {
     uint64_t imed; // for immediate
     int reg ;
-    char label[64];
+    char label[32];
     OperandType operandtype ;// Registers , immediate , .label or mem
 
 }Operand;
@@ -42,7 +42,7 @@ typedef struct {
     OpType op;
     int line;
     Operand operand;
-    char label_name[64]; // if OP_LABEL .. implement this later
+    char label_name[32]; // if OP_LABEL .. implement this later
     uint64_t address;
 }Instruction;
 

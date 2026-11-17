@@ -11,8 +11,10 @@ void write_program_to_file(Parser *parser,char *file_path){
         fprintf(stderr, "ERROR: Could not write to file %s\n",file_path);
         exit(1);
     }
+    printf("--%d\n",parser->instr_count);
+    printf("%lu\n",sizeof(Instruction));
 
-    fwrite(parser->instructions,sizeof(Instruction),sizeof(Instruction) * parser->instr_count,file);
+    fwrite(parser->instructions,sizeof(Instruction),parser->instr_count,file);
 
     fclose(file);
 
