@@ -1,5 +1,6 @@
-jmp main
+jmp main 
 push 60
+
 
 main:
     push 9 
@@ -13,3 +14,6 @@ main:
     pop R2 
     push 15 
     push 7 
+End:
+    push 100
+    push 300

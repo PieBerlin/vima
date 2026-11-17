@@ -18,8 +18,16 @@ void create_symbol_table(SYMBOL_TABLE *symbol_table,Machine *machine){
     }
     free(item);
 }
-void check_for_label(){
+int check_for_label(SYMBOL_TABLE *symbol_table,char *name){
+    int i = 0;
+    while (*symbol_table[i].label){
+        if (strcmp(symbol_table[i].label, name) == 0){
+            return symbol_table[i].value;
+        }
+        i++;
 
+    }
+    return -1;
 }
 
 void print_symbol_table(SYMBOL_TABLE *symbol_table){

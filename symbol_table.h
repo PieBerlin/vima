@@ -15,6 +15,6 @@ typedef struct SYMBOL_TABLE {
 }SYMBOL_TABLE;
 
 void create_symbol_table(SYMBOL_TABLE *symbol_table,Machine *machine);
-void check_for_label();
+int check_for_label(SYMBOL_TABLE *symbol_table,char *name);
 void print_symbol_table(SYMBOL_TABLE *symbol_table);
 #endif

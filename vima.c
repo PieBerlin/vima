@@ -53,7 +53,7 @@ void read_program_from_file(Machine *machine,char *file_path){
     fclose(file);
 
 }
-void run_instruction(Machine *machine){
+void run_instruction(Machine *machine,SYMBOL_TABLE *symbol_table){
     int reg;
     for (int ip = 0; ip < machine->program_size; ip++){
             switch (machine->instructions[ip].op) {
@@ -73,6 +73,15 @@ void run_instruction(Machine *machine){
                     reg = machine->instructions[ip].operand.reg;
                     uint64_t value = machine->instructions[ip].operand.imed;
                     mov(machine,reg,value);
+                    break;
+                case OP_JMP:
+                    int jmp = check_for_label(symbol_table,machine->instructions[ip].operand.label);
+                    if (jmp < 0){
+                        fprintf(stderr, "Label %s not defined\n",
+                                machine->instructions[ip].operand.label);
+                        exit(1);
+                    }
+                    ip = jmp;
                     break;
                 case OP_PRINT:
                     break;
@@ -118,7 +127,7 @@ int main(){
     create_symbol_table(symbol_table,machine);
 
 
-    run_instruction(machine);
+    run_instruction(machine,symbol_table);
 
     // printf("%lu\n",sizeof(p));
     /* Print these for debuggin purposes */
