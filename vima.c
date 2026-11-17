@@ -46,7 +46,6 @@ void read_program_from_file(Machine *machine,char *file_path){
     fseek(file,0,SEEK_SET);
 
     fread(instruction,sizeof(Instruction),length / sizeof(Instruction),file);
-    printf("Length of file %d\n",length);
 
     machine->program_size = length / sizeof(Instruction); // 8 is size of each instruction
     machine->instructions = instruction;
@@ -115,7 +114,7 @@ int main(){
 
     read_program_from_file(machine,"test.vm");
     // create symbol table
-    SYMBOL_TABLE *symbol_table = malloc(sizeof(SYMBOL_TABLE) * SIZE_OF_SYMBOL_TABLE);
+    SYMBOL_TABLE symbol_table[SIZE_OF_SYMBOL_TABLE] ;
     create_symbol_table(symbol_table,machine);
 
 
