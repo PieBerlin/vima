@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include "instruction.h"
+#include "./include/types.h"
 
 #define MAX_STACK_SIZE       1024
 #define MAX_INSTRUCTION_SIZE 10240

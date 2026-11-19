@@ -31,31 +31,32 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("Opcode : %d Address : %lu ",parser->instructions[i].op,parser->instructions[i].address);
+        printf("Opcode : %d Address : %lu",parser->instructions[i].op,parser->instructions[i].address);
         
         // Print a lebel with mire information
         if(parser->instructions[i].op == OP_LABEL){
-            printf("Label definition %s ",
+            printf("Label definition %s",
                     parser->instructions[i].label_name);
         }
         switch(parser->instructions[i].operand.operandtype){
             case OPERAND_NONE:
-                printf("\n");
+                printf(" ");
                 break;
             case OPERAND_IMMEDIATE:
-                printf("Operand Immediate : %lu\n",parser->instructions[i].operand.imed);
+                printf("Operand Immediate : %lu",parser->instructions[i].operand.imed);
                 break;
             case OPERAND_REGISTER:
-                printf("Operand Register : R%d\n",parser->instructions[i].operand.reg);
+                printf("Operand Register : R%d",parser->instructions[i].operand.reg);
                 break;
             case OPERAND_MEMORY:
                 break;
             case OPERAND_LABEL: 
-                printf("Operand Label : %s\n",parser->instructions[i].operand.label);
+                printf("Operand Label : %s",parser->instructions[i].operand.label);
                 break;
 
 
         }
+        printf("\tLine %d\n",parser->instructions[i].line);
         i++;
     }
 
@@ -77,6 +78,8 @@ Parser *parser(Token *tokens){
                     inst->op = OP_LABEL;
                     inst->operand.operandtype = OPERAND_NONE;
                     strcpy(inst->label_name,tokens[i].value);
+
+                    inst->line = tokens[i].line;
 
                     i += 2;
 

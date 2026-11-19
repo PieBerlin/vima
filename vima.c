@@ -105,6 +105,8 @@ void print_registers(Machine *machine){
 }
 int main(){
 
+
+
     Machine *machine = init_machine();
 
     Token *tokens = lexer("test.vasm");
@@ -129,7 +131,9 @@ int main(){
 
     run_instruction(machine,symbol_table);
 
-    // printf("%lu\n",sizeof(p));
+    // printf("Size of Instruction %lu\n",sizeof(Instruction));
+
+
     /* Print these for debuggin purposes */
     print_stack(machine);
     print_registers(machine);

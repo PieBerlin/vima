@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "./include/types.h"
+
 typedef enum {
     OP_UNKNOWN,OP_HALT,OP_NOP,OP_ADD,OP_SUBOP_MUL,OP_DIV,OP_MOD,
     OP_AND,OP_OR,OP_XOR,OP_NOT,OP_SHL,OP_SHR,
@@ -31,7 +33,7 @@ typedef enum{
 
 typedef struct {
     uint64_t imed; // for immediate
-    int reg ;
+    int8 reg;
     char label[32];
     OperandType operandtype ;// Registers , immediate , .label or mem
 
