@@ -1,4 +1,4 @@
-jmp main 
+jmp main ; Ignore comments 
 push 60
 
 

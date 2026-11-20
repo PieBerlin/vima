@@ -31,11 +31,11 @@ typedef struct {
 void print_instructions(Parser *parser){
     int i = 0;
     while(i < parser->instr_count){
-        printf("Opcode : %d Address : %lu",parser->instructions[i].op,parser->instructions[i].address);
+        printf("Opcode : %d Address : %lu ",parser->instructions[i].op,parser->instructions[i].address);
         
         // Print a lebel with mire information
         if(parser->instructions[i].op == OP_LABEL){
-            printf("Label definition %s",
+            printf("Label definition %s ",
                     parser->instructions[i].label_name);
         }
         switch(parser->instructions[i].operand.operandtype){

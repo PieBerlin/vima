@@ -209,6 +209,15 @@ Token *lexer(char *filename){
             // free(token->value);
             free(token);
 
+        } else if (buffer[*current_index] == ';'){
+            // Ignore comments 
+            *current_index += 1;
+            while (buffer[*current_index] != '\n'){
+                *current_index += 1;
+            }
+            *current_index += 1;
+            line += 1;
+
         } else {
             *current_index += 1;
 
