@@ -14,6 +14,10 @@ OpType opcode_from_name(char *name){
         return OP_MOV;
     else if (strcmp(name,"jmp") == 0)
         return OP_JMP;
+    else if (strcmp(name,"dec") == 0)
+        return OP_DEC;
+    else if (strcmp(name,"inc") == 0)
+        return OP_INC;
 
     return OP_UNKNOWN;
 
@@ -145,14 +149,15 @@ Parser *parser(Token *tokens){
                         }
                         /*mov has two operands, well use reg and Immediate
                          * We'll keep in mind that mov has two arguments 
-                         * the firdt is the register 
+                         * the first is the register 
                          * the second in an Immediate value */
-                        char *reg = tokens[i + 1].value;
+                        strcpy(reg,tokens[i + 1].value);
                         inst->operand.reg = atoi(reg+1);
                         inst->operand.operandtype = OPERAND_REGISTER;
                         inst->operand.imed = atoi(tokens[i+3].value);
                         
                         i += 4;
+                        free(reg);
 
                     }
                     /*Handle a jump instruction */
@@ -161,17 +166,49 @@ Parser *parser(Token *tokens){
                         if(tokens[i + 1].type != TYPE_IDENT){
                             fprintf(stderr, "Expected identifier after jmp line %d \n",
                                     tokens[i].line);
+                            exit(1);
                         }
 
                         inst->operand.operandtype = OPERAND_LABEL;
                         strcpy(inst->operand.label,tokens[i+1].value);
                         i += 2;
                     }
+                    /*Handle inc instruction */
+                    else if(type == OP_INC){
+                        /*Assert the next token is a Register */
+                        if(tokens[i+1].type != TYPE_REG){
+                            fprintf(stderr, "Expected a Register after inc line %d\n",
+                                    tokens[i].line);
+                            exit(1);
+                        }
+                        strcpy(reg,tokens[i + 1].value);
+                        inst->operand.reg = atoi(reg+1);
+                        inst->operand.operandtype = OPERAND_REGISTER;
+                        i += 2;
+                        free(reg);
+
+                    }
+                    /*Handle dec instruction */
+                    else if(type == OP_DEC){
+                        /*Assert the next token is a Register */
+                        if(tokens[i+1].type != TYPE_REG){
+                            fprintf(stderr, "Expected a Register after dec line %d\n",
+                                    tokens[i].line);
+                            exit(1);
+                        }
+                        strcpy(reg,tokens[i + 1].value);
+                        inst->operand.reg = atoi(reg+1);
+                        inst->operand.operandtype = OPERAND_REGISTER;
+                        i += 2;
+                        free(reg);
+
+                    }
+
+
+
+
 
                 }
-
-
-
                 parser->instructions[instruction_index] = *inst;
                 parser->instr_count += 1;
                 instruction_index++;

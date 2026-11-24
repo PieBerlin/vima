@@ -153,6 +153,17 @@ Token *lexer(char *filename){
              * If not go back and check maybe its an identifier */
             *current_index += 1;
             if(isdigit(buffer[*current_index])){
+
+                /*Check for error incase user doesnt use R0-R9 */
+                *current_index += 1;
+                if(isdigit(buffer[*current_index])){
+                        printf("Error: Register not defined %d\n",line);// The next line
+                        exit(1);
+
+                }
+                *current_index -= 1;
+
+
                 token = generate_register(buffer,current_index);
                 token -> col = col;
                 token->line = line;
@@ -164,8 +175,8 @@ Token *lexer(char *filename){
                 free(token);
 
             }else{
-                *current_index -= 2;
-            printf("%c\n",buffer[*current_index]);
+                // treat it as an identifier and not Register
+                *current_index -= 1;
 
             }
 

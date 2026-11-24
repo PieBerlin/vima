@@ -83,6 +83,14 @@ void run_instruction(Machine *machine,SYMBOL_TABLE *symbol_table){
                     }
                     ip = jmp;
                     break;
+                case OP_INC:
+                    reg = machine->instructions[ip].operand.reg;
+                    machine->regs[reg] += 1;
+                    break;
+                case OP_DEC:
+                    reg = machine->instructions[ip].operand.reg;
+                    machine->regs[reg] -= 1;
+                    break;
                 case OP_PRINT:
                     break;
                 default:
